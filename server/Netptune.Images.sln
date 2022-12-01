@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netptune.Images", "Netptune.Images\Netptune.Images.csproj", "{F99F4864-9E39-44BF-ADFF-47EEEBFA5C3F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netptune.Images.Processing", "Netptune.Images.Processing\Netptune.Images.Processing.csproj", "{48FD8004-39FA-49E0-A06D-7EC49C71DDB8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netptune.Images.Core", "Netptune.Images.Core\Netptune.Images.Core.csproj", "{30DA3D25-6173-46FF-AF92-0FEA0F3DF980}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{F99F4864-9E39-44BF-ADFF-47EEEBFA5C3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F99F4864-9E39-44BF-ADFF-47EEEBFA5C3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F99F4864-9E39-44BF-ADFF-47EEEBFA5C3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48FD8004-39FA-49E0-A06D-7EC49C71DDB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48FD8004-39FA-49E0-A06D-7EC49C71DDB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48FD8004-39FA-49E0-A06D-7EC49C71DDB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48FD8004-39FA-49E0-A06D-7EC49C71DDB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30DA3D25-6173-46FF-AF92-0FEA0F3DF980}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30DA3D25-6173-46FF-AF92-0FEA0F3DF980}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30DA3D25-6173-46FF-AF92-0FEA0F3DF980}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30DA3D25-6173-46FF-AF92-0FEA0F3DF980}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
