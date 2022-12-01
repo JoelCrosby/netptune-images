@@ -1,5 +1,8 @@
+using System.ComponentModel.DataAnnotations;
+
 using Flurl;
 
+using Netptune.Images;
 using Netptune.Images.Processing;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,7 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient();
 builder.Services.AddOutputCache(options =>
 {
-    options.SizeLimit = 12_046;
     options.UseCaseSensitivePaths = true;
     options.DefaultExpirationTimeSpan = TimeSpan.FromHours(1);
 });
@@ -16,20 +18,23 @@ var app = builder.Build();
 
 const string basePath = "https://netptune-cloud.s3.eu-west-2.amazonaws.com/production";
 
-app.MapGet("/{path}", async (string path, IHttpClientFactory clientFactory) =>
+
+app.UseOutputCache();
+
+app.MapGet("/favicon.ico", Results.NoContent);
+
+app.MapGet("/{path}", async ([Required] string? path, [AsParameters] ImageQueryParams query, IHttpClientFactory clientFactory) =>
 {
     var source = basePath.AppendPathSegment(path);
-    var client = clientFactory.CreateClient();
+    using var client = clientFactory.CreateClient();
 
     var response = await client.GetStreamAsync(source);
-    var processed = ImageProcessor.ProcessStream(response, new ());
+    var (processed, contentType) = ImageProcessor.ProcessStream(response, query.ToOptions());
 
     if (processed is null) return Results.NotFound();
 
-    return Results.File(processed, "image/webp");
+    return Results.File(processed, contentType);
 
-}).CacheOutput(b => b.SetVaryByRouteValue("path"));
-
-app.UseOutputCache();
+}).CacheOutput(b => b.SetVaryByRouteValue("path").SetVaryByQuery(ImageQueryParams.QueryKeys));
 
 app.Run();

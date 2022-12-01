@@ -1,12 +1,4 @@
 ﻿{
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:23317",
-      "sslPort": 44319
-    }
-  },
   "profiles": {
     "Netptune.Images": {
       "commandName": "Project",
