@@ -1,6 +1,6 @@
 ﻿namespace Netptune.Images.Core.Types;
 
-public record ProcessingOptions
+public sealed record ProcessingOptions
 {
     public int? Width { get; init; }
 

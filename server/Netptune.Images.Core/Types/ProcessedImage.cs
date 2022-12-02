@@ -1,6 +1,6 @@
 namespace Netptune.Images.Core.Types;
 
-public record ProcessedImage
+public sealed record ProcessedImage
 {
     public required Stream Content { get; init; }
 

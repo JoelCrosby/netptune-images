@@ -1,6 +1,6 @@
 namespace Netptune.Images.Core.Types;
 
-public record ImageProcessingOptions
+public sealed record ImageProcessingOptions
 {
     public required string BasePath { get; set; }
 }

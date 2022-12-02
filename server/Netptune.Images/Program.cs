@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 using Netptune.Images;
 using Netptune.Images.Core.Services;
 using Netptune.Images.Processing;
@@ -24,11 +22,11 @@ app.UseOutputCache();
 
 app.MapGet("/favicon.ico", Results.NoContent);
 
-app.MapGet("/{path}", async ([Required] string? path, [AsParameters] ImageQueryParams query, IImagePipeline pipeline) =>
+app.MapGet("/{path}", async ([AsParameters] ImageQueryParams query, IImagePipeline pipeline) =>
 {
-    if (path is null) return Results.BadRequest();
+    if (query.Path is null) return Results.BadRequest();
 
-    var result = await pipeline.Process(path, query.ToOptions());
+    var result = await pipeline.Process(query.Path, query.ToOptions());
 
     if (result is null) return Results.NotFound();
 

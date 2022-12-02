@@ -8,7 +8,7 @@ using Netptune.Images.Core.Types;
 
 namespace Netptune.Images.Processing;
 
-public class ImageRetriever : IImageRetriever
+public sealed class ImageRetriever : IImageRetriever
 {
     private readonly HttpClient HttpClient;
     private readonly IMemoryCache Cache;
@@ -21,7 +21,7 @@ public class ImageRetriever : IImageRetriever
         Options = options;
     }
 
-    public async Task<Stream?> Get(string path)
+    public async ValueTask<Stream?> Get(string path)
     {
         var result = await Cache.GetOrCreateAsync(path, async _ =>
         {

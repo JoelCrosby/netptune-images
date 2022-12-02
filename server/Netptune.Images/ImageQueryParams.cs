@@ -1,11 +1,17 @@
+using System.ComponentModel.DataAnnotations;
+
 using Microsoft.AspNetCore.Mvc;
 
 using Netptune.Images.Core.Types;
 
 namespace Netptune.Images;
 
-public record ImageQueryParams
+public sealed record ImageQueryParams
 {
+    [FromRoute(Name = "path")]
+    [Required]
+    public string? Path { get; init; }
+
     [FromQuery(Name = "w")]
     public int? Width { get; init; }
 

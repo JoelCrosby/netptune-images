@@ -7,11 +7,15 @@ using NetVips;
 
 namespace Netptune.Images.Processing;
 
-public class ImageProcessor : IImageProcessor
+public sealed class ImageProcessor : IImageProcessor
 {
+    private static readonly ProcessingOptions DefaultOptions = new();
+
+    private const string DefaultFontFamily = "sans";
+
     public ProcessedImage? ProcessStream(Stream stream, ProcessingOptions? options)
     {
-        options ??= new ProcessingOptions();
+        options ??= DefaultOptions;
 
         try
         {
@@ -54,7 +58,9 @@ public class ImageProcessor : IImageProcessor
                     Convert.ToInt16(colorType.B),
                 };
 
-                var font = $"{options.TextFontFamily ?? "sans"} {options.TextFontSize?.ToString() ?? String.Empty}";
+                var fontSize = options.TextFontSize?.ToString() ?? String.Empty;
+                var fontFamily = options.TextFontFamily ?? DefaultFontFamily;
+                var font = $"{fontFamily} {fontSize}";
 
                 using var text = Image.Text(options.Text, dpi: 300, font: font);
                 using var textLayer = text.Gravity(Enums.CompassDirection.Centre, image.Width, image.Height);
@@ -75,19 +81,19 @@ public class ImageProcessor : IImageProcessor
                     contentType = "image/webp";
                     break;
                 case ImageFormat.Png:
-                    image.PngsaveStream(result, q: quality);
+                    image.PngsaveStream(result, q: quality, strip: true);
                     contentType = "image/png";
                     break;
                 case ImageFormat.Webp:
-                    image.WebpsaveStream(result, q: quality);
+                    image.WebpsaveStream(result, q: quality, strip: true);
                     contentType = "image/webp";
                     break;
                 case ImageFormat.Jpg:
-                    image.JpegsaveStream(result, q: quality);
+                    image.JpegsaveStream(result, q: quality, strip: true);
                     contentType = "image/jpeg";
                     break;
                 default:
-                    image.WebpsaveStream(result, q: quality);
+                    image.WebpsaveStream(result, q: quality, strip: true);
                     contentType = "image/webp";
                     break;
             }

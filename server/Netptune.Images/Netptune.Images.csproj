@@ -10,8 +10,4 @@
       <ProjectReference Include="..\Netptune.Images.Processing\Netptune.Images.Processing.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="Flurl" Version="3.0.6" />
-    </ItemGroup>
-
 </Project>
