@@ -1,13 +1,17 @@
 using System.ComponentModel.DataAnnotations;
 
-using Flurl;
-
 using Netptune.Images;
+using Netptune.Images.Core.Services;
 using Netptune.Images.Processing;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpClient();
+builder.Services.AddImageProcessing(options =>
+{
+    options.BasePath = builder.Configuration.GetValue<string>("BasePath") ?? throw new Exception("BasePath required");
+});
+
 builder.Services.AddOutputCache(options =>
 {
     options.UseCaseSensitivePaths = true;
@@ -16,24 +20,19 @@ builder.Services.AddOutputCache(options =>
 
 var app = builder.Build();
 
-const string basePath = "https://netptune-cloud.s3.eu-west-2.amazonaws.com/production";
-
-
 app.UseOutputCache();
 
 app.MapGet("/favicon.ico", Results.NoContent);
 
-app.MapGet("/{path}", async ([Required] string? path, [AsParameters] ImageQueryParams query, IHttpClientFactory clientFactory) =>
+app.MapGet("/{path}", async ([Required] string? path, [AsParameters] ImageQueryParams query, IImagePipeline pipeline) =>
 {
-    var source = basePath.AppendPathSegment(path);
-    using var client = clientFactory.CreateClient();
+    if (path is null) return Results.BadRequest();
 
-    var response = await client.GetStreamAsync(source);
-    var (processed, contentType) = ImageProcessor.ProcessStream(response, query.ToOptions());
+    var result = await pipeline.Process(path, query.ToOptions());
 
-    if (processed is null) return Results.NotFound();
+    if (result is null) return Results.NotFound();
 
-    return Results.File(processed, contentType);
+    return Results.File(result.Content, result.ContentType);
 
 }).CacheOutput(b => b.SetVaryByRouteValue("path").SetVaryByQuery(ImageQueryParams.QueryKeys));
 

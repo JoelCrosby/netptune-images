@@ -1,14 +1,15 @@
 ﻿using System.Drawing;
 
+using Netptune.Images.Core.Services;
 using Netptune.Images.Core.Types;
 
 using NetVips;
 
 namespace Netptune.Images.Processing;
 
-public class ImageProcessor
+public class ImageProcessor : IImageProcessor
 {
-    public static (Stream?, string?) ProcessStream(Stream stream, ProcessingOptions? options)
+    public ProcessedImage? ProcessStream(Stream stream, ProcessingOptions? options)
     {
         options ??= new ProcessingOptions();
 
@@ -19,10 +20,11 @@ public class ImageProcessor
                 stream.Seek(0, SeekOrigin.Begin);
             }
 
-            var image = Image.NewFromStream(stream);
+            var image = Image.NewFromStream(stream, access: Enums.Access.Sequential);
 
             var width = options.Width ?? image.Width;
             var height = options.Height ?? image.Height;
+            var quality = options.Quality is > 100 ? 100 : options.Quality;
 
             Enums.Size? size = options.Scale switch
             {
@@ -69,36 +71,38 @@ public class ImageProcessor
             switch (options.Format)
             {
                 case ImageFormat.Original:
-                    image.WebpsaveStream(result, q: options.Quality);
+                    image.WebpsaveStream(result, q: quality);
                     contentType = "image/webp";
                     break;
                 case ImageFormat.Png:
-                    image.PngsaveStream(result, q: options.Quality);
+                    image.PngsaveStream(result, q: quality);
                     contentType = "image/png";
                     break;
                 case ImageFormat.Webp:
-                    image.WebpsaveStream(result, q: options.Quality);
+                    image.WebpsaveStream(result, q: quality);
                     contentType = "image/webp";
                     break;
                 case ImageFormat.Jpg:
-                    image.JpegsaveStream(result, q: options.Quality);
+                    image.JpegsaveStream(result, q: quality);
                     contentType = "image/jpeg";
                     break;
                 default:
-                    image.WebpsaveStream(result, q: options.Quality);
+                    image.WebpsaveStream(result, q: quality);
                     contentType = "image/webp";
                     break;
             }
 
-            image.Dispose();
-
             result.Seek(0, SeekOrigin.Begin);
 
-            return (result, contentType);
+            return new ProcessedImage
+            {
+                Content = result,
+                ContentType = contentType,
+            };
         }
         catch
         {
-            return (null, null);
+            return null;
         }
     }
 }
